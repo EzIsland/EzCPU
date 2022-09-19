@@ -32,7 +32,7 @@ begin
   begin
     wait for c_period/4;
     for i in 0 to 2**c_N-1 loop
-      v_expected := std_logic_vector(to_unsigned(i+1, c_N));
+      v_expected := std_logic_vector(to_unsigned(i, c_N));
       assert w_counter = v_expected
         report "Expected value " & to_string(v_expected)
         & ". Found value " & to_string(w_counter) & ".";

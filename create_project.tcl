@@ -13,6 +13,7 @@ proc set_project_assignments { src_files top_level_entity } {
     set_global_assignment -name FAMILY "Cyclone IV E"
     set_global_assignment -name DEVICE EP4CE115F29C7
     set_global_assignment -name TOP_LEVEL_ENTITY $top_level_entity
+    set_global_assignment -name VHDL_INPUT_VERSION VHDL_2008
     for { set idx 0 } { $idx < [llength $src_files] } { incr idx } {
 	set_global_assignment -name VHDL_FILE [lindex $src_files $idx]
     }
@@ -22,8 +23,8 @@ proc set_pin_assignments {} {
     # #============================================================
     # # CLOCK
     # #============================================================
-    # set_location_assignment PIN_Y2 -to CLOCK_50
-    # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK_50
+    set_location_assignment PIN_Y2 -to CLOCK_50
+    set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK_50
     # set_location_assignment PIN_AG14 -to CLOCK2_50
     # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to CLOCK2_50
     # set_location_assignment PIN_AG15 -to CLOCK3_50
@@ -914,8 +915,8 @@ proc set_pin_assignments {} {
     # #============================================================
     # # GPIO, GPIO connect to GPIO Default
     # #============================================================
-    # set_location_assignment PIN_AB22 -to GPIO[0]
-    # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[0]
+    set_location_assignment PIN_AB22 -to GPIO[0]
+    set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[0]
     # set_location_assignment PIN_AC15 -to GPIO[1]
     # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to GPIO[1]
     # set_location_assignment PIN_AB21 -to GPIO[2]

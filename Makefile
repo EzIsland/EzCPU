@@ -101,5 +101,6 @@ asm : $(ASM_TS_FILE)
 
 #### DEPENDENCY DESCRIPTION ####
 
-$(SRC_DIR)/top_level_entity.vhd : $(call deps, src/counter.vhd)
+$(SRC_DIR)/top_level_entity.vhd : $(call deps, src/counter.vhd src/pll.vhd)
 $(TEST_DIR)/counter_tb.vhd : $(call deps, src/counter.vhd test/util_pkg.vhd)
+$(TEST_DIR)/pll_tb.vhd : $(call deps, src/pll.vhd)
