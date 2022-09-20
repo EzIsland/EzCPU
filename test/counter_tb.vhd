@@ -8,7 +8,7 @@ entity Counter_tb is
 end;
 
 architecture sim of Counter_tb is
-  constant c_period : time := 5 ns;
+  constant c_period : time := 4 ns;
   constant c_N : natural := 9;
   signal w_clk : std_logic;
   signal w_counter : std_logic_vector(c_N-1 downto 0);
@@ -20,7 +20,7 @@ begin
 
   process
   begin
-   for i in 0 to 2**c_N-1 loop
+   for i in 0 to 2**(c_N+1) loop
       w_clk <= '0'; wait for c_period/2;
       w_clk <= '1'; wait for c_period/2;
    end loop;

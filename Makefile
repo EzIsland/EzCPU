@@ -10,6 +10,8 @@ MODELSIM_DIR:=$(BUILD_DIR)/modelsim
 TS_DIR:=$(BUILD_DIR)/ts
 CREATE_PROJECT_FILE:=$(ROOT_DIR)/create_project.tcl
 
+BUILD_DIRS:=$(BUILD_DIR) $(PROJECT_DIR) $(MODELSIM_DIR) $(TS_DIR) $(TS_DIR)/src $(TS_DIR)/test
+
 MAP_TS_FILE:=$(TS_DIR)/map.ts
 FIT_TS_FILE:=$(TS_DIR)/fit.ts
 PROJECT_TS_FILE:=$(TS_DIR)/project.ts
@@ -31,7 +33,10 @@ deps=$(foreach dep,$(1),$(call getTSFileForSrc,$(ROOT_DIR)/$(dep)))
 
 .SECONDEXPANSION:
 
-$(PROJECT_TS_FILE): $(CREATE_PROJECT_FILE) $(SRC_FILES)
+$(BUILD_DIRS) :
+	mkdir -p $@
+
+$(PROJECT_TS_FILE): $(CREATE_PROJECT_FILE) $(SRC_FILES) | $(BUILD_DIRS)
 	cd $(PROJECT_DIR) && quartus_sh --script=$< $(PROJECT_NAME) "$(SRC_FILES)" $(TOP_LEVEL_ENTITY)
 	touch $@
 
@@ -54,7 +59,7 @@ $(ASM_TS_FILE) : $(FIT_TS_FILE)
 pgm : $(ASM_TS_FILE)
 	cd $(PROJECT_DIR) && quartus_pgm -c USB-Blaster -m JTAG -o p\;$(PROJECT_NAME).sof
 
-$(VLIB_TS_FILE):
+$(VLIB_TS_FILE) : | $(BUILD_DIRS)
 	cd $(MODELSIM_DIR) && vlib $(VLIB_NAME)
 	touch $@
 
@@ -69,26 +74,15 @@ test : $(call getTBNameList)
 
 clean_project:
 	rm -rf $(PROJECT_DIR)
-	mkdir $(PROJECT_DIR)
 
 clean_modelsim:
 	rm -rf $(MODELSIM_DIR)
-	mkdir $(MODELSIM_DIR)
 
 clean_ts:
 	rm -rf $(TS_DIR)
-	mkdir $(TS_DIR)
-	mkdir $(TS_DIR)/src
-	mkdir $(TS_DIR)/test
 
 clean:
 	rm -rf $(BUILD_DIR)
-	mkdir $(BUILD_DIR)
-	mkdir $(PROJECT_DIR)
-	mkdir $(MODELSIM_DIR)
-	mkdir $(TS_DIR)
-	mkdir $(TS_DIR)/src
-	mkdir $(TS_DIR)/test
 
 project : $(PROJECT_TS_FILE)
 map : $(MAP_TS_FILE)
@@ -101,6 +95,6 @@ asm : $(ASM_TS_FILE)
 
 #### DEPENDENCY DESCRIPTION ####
 
-$(SRC_DIR)/top_level_entity.vhd : $(call deps, src/counter.vhd src/pll.vhd)
-$(TEST_DIR)/counter_tb.vhd : $(call deps, src/counter.vhd test/util_pkg.vhd)
-$(TEST_DIR)/pll_tb.vhd : $(call deps, src/pll.vhd)
+$(call deps,src/top_level_entity.vhd) : $(call deps, src/counter.vhd src/pll.vhd)
+$(call deps,test/counter_tb.vhd) : $(call deps, src/counter.vhd test/util_pkg.vhd)
+$(call deps,test/pll_tb.vhd) : $(call deps, src/pll.vhd)
