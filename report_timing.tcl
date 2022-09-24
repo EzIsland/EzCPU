@@ -1,0 +1,3 @@
+report_clock_fmax_summary
+report_clocks
+report_metastability

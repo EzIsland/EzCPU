@@ -364,8 +364,8 @@ proc set_pin_assignments {} {
     # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_VS
     # set_location_assignment PIN_C10 -to VGA_SYNC_N
     # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_SYNC_N
-    set_location_assignment PIN_A12 -to o_clk
-    set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to o_clk
+    # set_location_assignment PIN_A12 -to VGA_CLK
+    # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_CLK
     # set_location_assignment PIN_F11 -to VGA_BLANK_N
     # set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_BLANK_N
     # set_location_assignment PIN_E12 -to VGA_R[0]

@@ -7,7 +7,6 @@ entity top_level_entity is
     -- LEDG : out std_logic_vector(8 downto 0);
     -- KEY : in std_logic_vector(0 downto 0);
     i_clk : in std_logic;
-    o_clk : out std_logic;
     i_gpio1 : in std_logic_vector(7 downto 0);
     i_gpio2 : in std_logic_vector(7 downto 0);
     o_gpio : out std_logic_vector(7 downto 0));
@@ -26,7 +25,6 @@ begin
   --     o_counter => LEDG);
 
   o_gpio <= r_o_gpio;
-  o_clk <= sys_clk;
   
   my_pll: entity work.pll
     port map(

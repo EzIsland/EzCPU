@@ -11,6 +11,7 @@ TS_DIR:=$(BUILD_DIR)/ts
 CREATE_PROJECT_FILE:=$(ROOT_DIR)/create_project.tcl
 TIMING_CONSTRAINTS_FILE:=$(ROOT_DIR)/timing_constraints.sdc
 MESSAGE_SUPPRESSIONS_FILE:=$(ROOT_DIR)/message_suppressions.srf
+REPORT_TIMING_FILE:=$(ROOT_DIR)/report_timing.tcl
 
 BUILD_DIRS:=$(BUILD_DIR) $(PROJECT_DIR) $(MODELSIM_DIR) $(TS_DIR) $(TS_DIR)/src $(TS_DIR)/test
 
@@ -51,8 +52,8 @@ $(FIT_TS_FILE) : $(MAP_TS_FILE) $(TIMING_CONSTRAINTS_FILE)
 	cd $(PROJECT_DIR) && quartus_fit $(PROJECT_NAME)
 	touch $@
 
-$(STA_TS_FILE) : $(FIT_TS_FILE)
-	cd $(PROJECT_DIR) && quartus_sta $(PROJECT_NAME)
+$(STA_TS_FILE) : $(FIT_TS_FILE) $(REPORT_TIMING_FILE)
+	cd $(PROJECT_DIR) && quartus_sta $(PROJECT_NAME) --report_script=$(REPORT_TIMING_FILE)
 	touch $@
 
 $(ASM_TS_FILE) : $(FIT_TS_FILE)
@@ -86,6 +87,13 @@ clean_ts:
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+open: $(PROJECT_TS_FILE)
+	quartus $(PROJECT_DIR)/$(PROJECT_NAME).qpf &
+
+open_sta: $(PROJECT_TS_FILE)
+	cd $(PROJECT_DIR) && quartus_staw $(PROJECT_NAME) &
+
 
 project : $(PROJECT_TS_FILE)
 map : $(MAP_TS_FILE)
