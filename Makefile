@@ -9,6 +9,8 @@ PROJECT_DIR:=$(BUILD_DIR)/project
 MODELSIM_DIR:=$(BUILD_DIR)/modelsim
 TS_DIR:=$(BUILD_DIR)/ts
 CREATE_PROJECT_FILE:=$(ROOT_DIR)/create_project.tcl
+TIMING_CONSTRAINTS_FILE:=$(ROOT_DIR)/timing_constraints.sdc
+MESSAGE_SUPPRESSIONS_FILE:=$(ROOT_DIR)/message_suppressions.srf
 
 BUILD_DIRS:=$(BUILD_DIR) $(PROJECT_DIR) $(MODELSIM_DIR) $(TS_DIR) $(TS_DIR)/src $(TS_DIR)/test
 
@@ -36,15 +38,16 @@ deps=$(foreach dep,$(1),$(call getTSFileForSrc,$(ROOT_DIR)/$(dep)))
 $(BUILD_DIRS) :
 	mkdir -p $@
 
-$(PROJECT_TS_FILE): $(CREATE_PROJECT_FILE) $(SRC_FILES) | $(BUILD_DIRS)
-	cd $(PROJECT_DIR) && quartus_sh --script=$< $(PROJECT_NAME) "$(SRC_FILES)" $(TOP_LEVEL_ENTITY)
+$(PROJECT_TS_FILE): $(CREATE_PROJECT_FILE) $(SRC_FILES) $(MESSAGE_SUPPRESSIONS_FILE) | $(BUILD_DIRS)
+	cp $(MESSAGE_SUPPRESSIONS_FILE) $(PROJECT_DIR)/$(PROJECT_NAME).srf
+	cd $(PROJECT_DIR) && quartus_sh --script=$< $(PROJECT_NAME) "$(SRC_FILES)" $(TOP_LEVEL_ENTITY) $(TIMING_CONSTRAINTS_FILE)
 	touch $@
 
 $(MAP_TS_FILE) : $(PROJECT_TS_FILE)
 	cd $(PROJECT_DIR) && quartus_map $(PROJECT_NAME)
 	touch $@
 
-$(FIT_TS_FILE) : $(MAP_TS_FILE)
+$(FIT_TS_FILE) : $(MAP_TS_FILE) $(TIMING_CONSTRAINTS_FILE)
 	cd $(PROJECT_DIR) && quartus_fit $(PROJECT_NAME)
 	touch $@
 
